@@ -17,8 +17,6 @@ def server_init(uname, psswd):
     @param uname Username of Bamboo
     @param pssed Password of Bamboo
     '''
-
-    print "test push"
     global home_page
     home_page = Homepage(uname, psswd)
     global test_suite_page
