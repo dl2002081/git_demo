@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Uranus</title>
+        <script src="{{url_for('static',filename='assets/angular.js')}}"></script>
+        <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='stylesheet.css')}}"/>
+        <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='bower_components/bootstrap/dist/css/bootstrap.css')}}"/>
+        <script type="text/javascript" src="{{url_for('static',filename='tab.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='chart.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='general.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='nvd3-directives/dist/angularjs-nvd3-directives.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='nvd3-directives/dist/d3.js')}}"></script>
+        <script type="text/javascript" src="{{url_for('static',filename='nvd3-directives/dist/nv.d3.js')}}"></script>
+        <link type="text/css" rel="stylesheet" href="{{url_for('static',filename='nvd3-directives/dist/nv.d3.css')}}"/>
+        <link rel="shortcut icon" href="{{url_for('static',filename='favicon/favicon.ico')}}">
+    </head>
+    <body ng-app="app"  ng-controller="generalCtrl">
+        <div ng-controller="tabCtrl" id="basicLayout" >
+            <div id="dashboardWordcontainor">
+                <h1 id="test">
+                    <strong>
+                    <span id="dashboardWord">Uranus</span>
+                    </strong>
+                    <span ng-show="load">
+                    <img src="{{url_for('static',filename='assets/loader.gif')}}">
+                    </span>
+                </h1>
+            </div>
+            {% raw %}
+            <hr>
+            <table id="macroTable">
+                <tr>
+                    <td class="tableCell">
+                        <table class="middleTable">
+                            <tr>
+                                <td>
+                                    <span class="titleSize" ng-click="setState(0, 1)">
+                                    <a class="normaltext">Test Suites</a>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="table table-hover innerTable">
+                                        <thead>
+                                            <tr class="firstRow">
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 1}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(1); testsuite_sort='name'; suite_status=!suite_status">Test Suite</a>
+                                                </td>
+                                                <td class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 2}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(2); testsuite_sort='plan_key'; suite_status=!suite_status">Test Suite Key</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 3}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(3); testsuite_sort='start_date'; suite_status=!suite_status">Date</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 4}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(4); testsuite_sort= 'start_time'; suite_status=!suite_status">Start Time</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 5}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(5); testsuite_sort='end_time'; suite_status=!suite_status">End Time</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 6}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(6); testsuite_sort='total_test'; suite_status=!suite_status">Total</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 7}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(7); testsuite_sort='test_passed'; suite_status=!suite_status">Passed</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 8}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(8); testsuite_sort='test_failed'; suite_status=!suite_status">Failed</a>
+                                                </td>
+                                                <td ng-show="homeTab" class="cellTitle" ng-class="{tabInfo: selectedTestSuiteTab == 9}">
+                                                    <a class="normaltext" ng-click="testSuiteSelect(9); testsuite_sort='test_quarantined'; suite_status=!suite_status">Quarantined</a>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="data in myData | orderBy:testsuite_sort:suite_status"
+                                                ng-click="expandTestSuite(this)" ng-class="{{setOutcome(this)}}"
+                                                class="{{outCome}} pointerCursor">
+                                                <td ng-show="homeTab">{{data.name}}</td>
+                                                <td>{{data.plan_key}}</td>
+                                                <td ng-show="homeTab">{{data.start_date}}</td>
+                                                <td ng-show="homeTab">{{data.start_time}}</td>
+                                                <td ng-show="homeTab">{{data.end_time}}</td>
+                                                <td ng-show="homeTab">{{data.total_test}}</td>
+                                                <td ng-show="homeTab">{{data.test_passed}}</td>
+                                                <td ng-show="homeTab">{{data.test_failed}}</td>
+                                                <td ng-show="homeTab">{{data.test_quarantined}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tableCell">
+                        <table class="middleTable" ng-show="testSuiteTable">
+                            <tr>
+                                <td>
+                                    <span class="titleSize" ng-click="setState(2,1)">
+                                    <a class="normaltext">Tests</a>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="table table-hover table-condensed innerTable">
+                                        <thead>
+                                            <tr class="firstRow">
+                                                <td class="cellTitle" ng-class="{tabInfo: selectedTestTab == 1}">
+                                                    <a class="normaltext" ng-click="testSelect(1); test_sort='className'; test_status=!test_status">Tests</a>
+                                                </td>
+                                                <td ng-show="testSuiteTab" class="cellTitle" ng-class="{tabInfo: selectedTestTab == 2}">
+                                                    <a class="normaltext" ng-click="testSelect(2); test_sort='total'; test_status=!test_status">Total</a>
+                                                </td>
+                                                <td ng-show="testSuiteTab" class="cellTitle" ng-class="{tabInfo: selectedTestTab == 3}">
+                                                    <a class="normaltext" ng-click="testSelect(3); test_sort='successful'; test_status=!test_status">Passed</a>
+                                                </td>
+                                                <td ng-show="testSuiteTab" class="cellTitle" ng-class="{tabInfo: selectedTestTab == 4}">
+                                                    <a class="normaltext" ng-click="testSelect(4); test_sort='failed'; test_status=!test_status">Failed</a>
+                                                </td>
+                                                <td ng-show="testSuiteTab" class="cellTitle" ng-class="{tabInfo: selectedTestTab == 5}">
+                                                    <a class="normaltext" ng-click="testSelect(5); test_sort='quarantined'; test_status=!test_status">Quaranntined</a>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr ng-repeat="testSuiteDetail in testSuite | orderBy:test_sort:test_status"
+                                                ng-click="expandTest(this)" ng-class="{{setTestOutcome(this)}}"
+                                                class="{{outCome}} pointerCursor">
+                                                <td>{{testSuiteDetail.className}}</td>
+                                                <td ng-show="testSuiteTab">{{testSuiteDetail.total}}</td>
+                                                <td ng-show="testSuiteTab">{{testSuiteDetail.successful}}</td>
+                                                <td ng-show="testSuiteTab">{{testSuiteDetail.failed}}</td>
+                                                <td ng-show="testSuiteTab">{{testSuiteDetail.quarantined}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tableCell">
+                        <table width="100%">
+                            <tr>
+                                <td>
+                                    <table class="middleTable" ng-show="testTable">
+                                        <tr>
+                                            <td>
+                                                <span class="titleSize" ng-click="setState(3)">Test Cases</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table class="table table-hover table-condensed innerTable">
+                                                    <thead>
+                                                        <tr class="firstRow">
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedCaseTab == 1}">
+                                                                <a class="normaltext" ng-click="caseSelect(1); case_sort='methodName'; case_status=!case_status">Test Cases</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedCaseTab == 2}">
+                                                                <a class="normaltext" ng-click="caseSelect(2); case_sort='status'; case_status=!case_status">Status</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedCaseTab == 3}">
+                                                                <a class="normaltext" ng-click="caseSelect(3); case_sort='quarantined'; case_status=!case_status">Quaranntined</a>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="case in testCases | orderBy:case_sort:case_status"
+                                                            ng-class="{{setCaseOutcome(this)}}"
+                                                            class="{{outCome}}">
+                                                            <td>{{case.methodName}}</td>
+                                                            <td>{{case.status}}</td>
+                                                            <td>{{case.quarantined}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="middleTable" ng-show="testTable">
+                                        <tr>
+                                            <td>
+                                                <span class="titleSize">Test Histories </span>
+                                                <a ng-click="toggle_history_status()" class="pointerCursor">{{history_show_status}}</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table class="table table-hover table-condensed innerTable">
+                                                    <thead>
+                                                        <tr class="firstRow">
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 1}">
+                                                                <a class="normaltext" ng-click="historySelect(1); history_sort='plan_key'; history_status=!history_status">Test Suite Key</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 2}">
+                                                                <a class="normaltext" ng-click="historySelect(2); history_sort='date'; history_status=!history_status">Date</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 3}">
+                                                                <a class="normaltext" ng-click="historySelect(3); history_sort='time'; history_status=!history_status">Time</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 4}">
+                                                                <a class="normaltext" ng-click="historySelect(4); history_sort='total'; history_status=!history_status">Total</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 5}">
+                                                                <a class="normaltext" ng-click="historySelect(5); history_sort='successful'; history_status=!history_status">Passed</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 6}">
+                                                                <a class="normaltext" ng-click="historySelect(6); history_sort='failed'; history_status=!history_status">Failed</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedHistoryTab == 7}">
+                                                                <a class="normaltext" ng-click="historySelect(7); history_sort='quarantined'; history_status=!history_status">Quaranntined</a>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="test in testHistory | orderBy:history_sort:!history_status | limitTo:history_quantity"
+                                                            ng-class="{{setHistoryOutcome(this)}}"
+                                                            class="{{outCome}}">
+                                                            <td>{{test.plan_key}}</td>
+                                                            <td>{{test.date}}</td>
+                                                            <td>{{test.time}}</td>
+                                                            <td>{{test.total}}</td>
+                                                            <td>{{test.successful}}</td>
+                                                            <td>{{test.failed}}</td>
+                                                            <td>{{test.quarantined}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <table class="middleTable" ng-show="testTable">
+                                        <tr>
+                                            <td>
+                                                <span class="titleSize">Related Test of the Day </span>
+                                                <!--<a ng-click="toggle_history_related_status()" class="pointerCursor">{{history_related_show_status}}</a>-->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <table class="table table-hover table-condensed innerTable">
+                                                    <thead>
+                                                        <tr class="firstRow">
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 1}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(1); historyRelated_sort='plan_key'; history_others=!history_others">Test Suite Key</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 2}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(2); historyRelated_sort='date'; history_others=!history_others">Date</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 3}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(3); historyRelated_sort='time'; history_others=!history_others">Time</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 4}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(4); historyRelated_sort='total'; history_others=!history_others">Total</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 5}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(5); historyRelated_sort='successful'; history_others=!history_others">Passed</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 6}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(6); historyRelated_sort='failed'; history_others=!history_others">Failed</a>
+                                                            </td>
+                                                            <td class="cellTitle" ng-class="{tabInfo: selectedRelatedHistoryTab == 7}">
+                                                                <a class="normaltext" ng-click="relatedHistorySelect(7); historyRelated_sort='quarantined'; history_others=!history_others">Quaranntined</a>
+                                                            </td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="test in testHisotyRelated | orderBy:historyRelated_sort:!history_others | limitTo:history_related_quantity" 
+                                                            ng-class="{{setHistoryOutcome(this)}}" 
+                                                            class="{{outCome}}">
+                                                            <td>{{test.plan_key}}</td>
+                                                            <td>{{test.date}}</td>
+                                                            <td>{{test.time}}</td>
+                                                            <td>{{test.total}}</td>
+                                                            <td>{{test.successful}}</td>
+                                                            <td>{{test.failed}}</td>
+                                                            <td>{{test.quarantined}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td class="tableCell"
+                        id="chartTable">
+                        <table class="table table-striped table-condensed innerTable" border=1>
+                            <tr>
+                                <td class="cellTitle">
+                                    <span class="dateTextSize">Selected Date </span>
+                                    <span class="dateTextSize">
+                                        <select
+                                            class="form-control"
+                                            ng-model="date"
+                                            ng-change="getData(this.date)"
+                                            ng-options="date for date in myDate">
+                                            <option value="">--Today--</option>
+                                        </select>
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td id="chartTitleText">
+                                    <span class="titleSize">{{chart_title}}</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="chartDataCell">
+                                    <div ng-controller="chartCtrl">
+                                        <nvd3-pie-chart 
+                                            id="Pie"
+                                            data="chartData"
+                                            x="xFunction()"
+                                            y="yFunction()"
+                                            tooltips="true"
+                                            tooltipcontent="toolTipContentFunction()"
+                                            objectequality="true"
+                                            width="1000"
+                                            height="1000"
+                                            color="colorFunction()"
+                                            showLabels="true"
+                                            interactive="true"
+                                            pieLabelsOutside="false"
+                                            showValues="true">
+                                            <svg></svg>
+                                        </nvd3-pie-chart>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="chartDataCell">
+                                    Total: {{total}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="chartDataCell">
+                                    Passed: {{pass}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="chartDataCell">
+                                    Failed: {{fail}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="chartDataCell">
+                                    Quarantined: {{quarantine}}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+    {% endraw %}
+</html>

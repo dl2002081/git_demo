@@ -1,0 +1,90 @@
+.passed {
+    background-color: #5cb85c;
+}
+
+.failed {
+    background-color: #d9534f;
+}
+
+.selectedInfo {
+    background-color: #5bc0de;
+}
+
+.tabInfo{
+    background-color: #bce8f1;
+}
+
+#basicLayout{
+    background-color: green;
+    height: 80px;
+    width: 100%;
+    position: absolute; top: 0;
+}
+
+#dashboardWord{
+    color: white;
+    margin: 10px;
+}
+
+.firstRow { 
+          background-color: white;
+} 
+
+#macroTable{
+    background-color: #F5F5F5;
+    width: 100%;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+.innerTable{
+    border-color: gray;
+    border-style: groove;
+    border-width: 0px;
+    width: 100%;
+}
+
+.middleTable{
+    border-color: gray;
+    border-style: groove;
+    border-width: 0px;
+    width: 100%;
+}
+
+.tableCell{
+    vertical-align: top;
+}
+
+#chartTable{
+    width: 20%;
+}
+
+.titleSize{
+    font-size: 25px;
+}
+
+.chartDataCell{
+    text-align: center;
+}
+
+.cellTitle{
+    text-align: left;
+}
+
+.normaltext{
+    color: black;
+    cursor: pointer;
+}
+
+#chartTitleText{
+    font-size: 25px;
+    text-align: center;
+}
+
+.dateTextSize{
+    font-size: 18px;
+}
+
+.pointerCursor{
+    cursor: pointer;
+}
